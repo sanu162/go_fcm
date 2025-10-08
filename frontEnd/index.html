@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>FCM Web Test</title>
+</head>
+<body>
+  <h3>Firebase Cloud Messaging Test</h3>
+  <button id="getTokenBtn">Get FCM Token</button>
+  <pre id="output"></pre>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
+
+  <script>
+    // ✅ Replace this config with YOUR Firebase config
+    const firebaseConfig = {
+        apiKey: "AIzaSyBwIdUiaxKmrN6dwoMxvLzkuOX9WJIcIf4",
+        authDomain: "skproject-9403d.firebaseapp.com",
+        projectId: "skproject-9403d",
+        messagingSenderId: "656977741555",
+        storageBucket: "skproject-9403d.firebasestorage.app",
+        appId: "1:656977741555:web:6f83f02cf8de0a3538d986"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const messaging = firebase.messaging();
+
+    // ✅ Ask permission and get token
+    document.getElementById("getTokenBtn").addEventListener("click", async () => {
+      try {
+        await Notification.requestPermission();
+        const token = await messaging.getToken({
+          vapidKey: "BMYZjyeWO_8wOI4Si67EtxkTcCuD6GSbFNK8Qks8ce7KBUmcUxvLpbv2Yw91orhilNPgTHwMS1N_fSaCd37p_HQ"
+        });
+        console.log("FCM Token:", token);
+        document.getElementById("output").innerText = token;
+      } catch (err) {
+        console.error("Error getting token:", err);
+        document.getElementById("output").innerText = "Error: " + err.message;
+      }
+    });
+
+    // ✅ Handle incoming messages when website is open
+    messaging.onMessage((payload) => {
+      console.log("Message received: ", payload);
+      alert(`Notification: ${payload.notification.title} - ${payload.notification.body}`);
+    });
+  </script>
+</body>
+</html>
